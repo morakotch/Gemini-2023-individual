@@ -1,101 +1,51 @@
-name: Java CI with SonarCloud - version 2 
+name: Java CI with SonarCloud - version 2
 
- 
+on:
+  pull_request:
+    branches:
+      - master
 
-on: 
+jobs:
+  build:
+    # add condition for run only when 'exercise-2' pull request to 'master'
+    if: github.event.pull_request.head.ref == 'exercise-2'
+    runs-on: ubuntu-latest
 
-  pull_request: 
+    steps:
+    # Checkout all commit in pull request branch
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
 
-    branches: 
-
-      - master 
-
- 
-
-jobs: 
-
-  build: 
-
-    # add condition for run only when 'exercise-2' pull request to 'master' 
-
-    if: github.event.pull_request.head.ref == 'exercise-2' 
-
-    runs-on: ubuntu-latest 
-
- 
-
-    steps: 
-
-    # Checkout all commit in pull request branch 
-
-    - name: Checkout code 
-
-      uses: actions/checkout@v2 
-
-      with: 
-
-        ref: ${{ github.event.pull_request.head.ref }} 
-
- 
-
-    - name: Set up JDK 
-
-      uses: actions/setup-java@v1 
-
-      with: 
-
-        java-version: '11' # You can change this to the version you want 
-
-     
-
-    - name: list java file 
-
-      run: | 
-
-        cd instructors-2/exercise  
-
-        ls 
-
-    - name: Compile Java 
-
-      run: | 
-
-        cd instructors-2/exercise  
-
-        javac -d . *.java  
-
-      # Compile java file from cirectory 
-
-  code_scan: 
-
-    needs: build # run after build process completed 
-
-    runs-on: ubuntu-latest 
-
-    steps: 
-
-    # Checkout all commit in pull request branch 
-
-    - name: Checkout code 
-
-      uses: actions/checkout@v2 
-
-      with: 
-
-        ref: ${{ github.event.pull_request.head.ref }} 
-
-         
-
-    - name: SonarCloud Scan 
-
-      uses: sonarsource/sonarcloud-github-action@master 
-
-      env: 
-
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_EXERCISE_2 }} # change token key name with format SONAR_TOKEN_BRANCHNAME / Another unique name 
-
-      with: 
-
-          projectBaseDir: instructors-2/exercise # set directory for use SonarQube 
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11' # You can change this to the version you want
+    
+    - name: list java file
+      run: |
+        cd instructors-2/exercise 
+        ls
+    - name: Compile Java
+      run: |
+        cd instructors-2/exercise 
+        javac -d . *.java 
+      # Compile java file from cirectory
+  code_scan:
+    needs: build # run after build process completed
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout all commit in pull request branch
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_EXERCISE_2 }} # change token key name with format SONAR_TOKEN_BRANCHNAME / Another unique name
+      with:
+          projectBaseDir: instructors-2/exercise # set directory for use SonarQube
